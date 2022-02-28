@@ -1,0 +1,4 @@
+{   "close_button": "return document.querySelector('game-app').shadowRoot.querySelector('game-theme-manager').querySelector('#game').querySelector('game-modal').shadowRoot.querySelector('.overlay').querySelector('.content').querySelector('.close-icon')",
+    "row_divs": "return document.querySelector('game-app').shadowRoot.querySelector('game-theme-manager').querySelector('#game').querySelector('#board-container').querySelector('#board').querySelectorAll('game-row')",
+    "share_button": "return document.querySelector('game-app').shadowRoot.querySelector('game-theme-manager').querySelector('#game').querySelector('game-modal').querySelector('game-stats').shadowRoot.querySelector('.container').querySelector('.footer').querySelector('.share').querySelector('#share-button')"
+}
