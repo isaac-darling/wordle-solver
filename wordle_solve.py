@@ -30,12 +30,15 @@ def init() -> None:
     with open("wordlist/letter_stats.json", "r") as f:
         STATS = json.load(f)
 
-def get_priority(word: str, *, info: dict[str: list[tuple[int, str]]] | None = None) -> float:
+def get_priority(word: str, *, info: dict[str: set[tuple[int, str]]] | None = None) -> float:
     """Determine how valuable a word in the queue is to guess"""
     if info is None:
-        info = {"absent": [], "present": [], "correct": []}
+        info = {"absent": set(), "present": set(), "correct": set()}
 
-    if any(clue[1] in word for clue in info["absent"]) or any(clue[1] not in word for clue in info["present"]+info["correct"]):
+    if info["present"] or info["correct"]:
+        info["absent"] = {clue for clue in info["absent"] if clue[1] not in list(zip(*(info["present"] | info["correct"])))[1]}
+
+    if any(clue[1] in word for clue in info["absent"]) or any(clue[1] not in word for clue in info["present"] | info["correct"]):
         return 0
 
     value = 0
@@ -72,9 +75,9 @@ def solve() -> None:
             if row.get_attribute("win") is not None:
                 break
 
-            clues = {"absent": [], "present": [], "correct": []}
+            clues = {"absent": set(), "present": set(), "correct": set()}
             for i, tile in enumerate(row.shadow_root.find_elements(By.CSS_SELECTOR, "game-tile")):
-                clues[tile.get_attribute("evaluation")].append((i, tile.get_attribute("letter")))
+                clues[tile.get_attribute("evaluation")].add((i, tile.get_attribute("letter")))
 
             queue = PriorityQueue([(item[0], get_priority(item[0], info=clues)) for item in queue])
             queue.drop()
